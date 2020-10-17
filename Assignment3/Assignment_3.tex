@@ -217,7 +217,7 @@ plt.xlabel('x');plt.ylabel('y')
 \end{lstlisting}
 %
 \section{Polynomial Curve Fitting}
-The goal is to find the best line that fits into the  pattern of the training data shown in the graph. By using regularization, we add a penalty term to the error function inorder to discourage the coefficients from reaching large values.
+The goal is to find the best line that fits into the  pattern of the training data shown in the graph.
 We shall fit the data using a polynomial function of the form, 
 \begin{align}
      y\brak{w,x}= \myvec{w_0 & w_1 & w_2 &.&...w_N}\myvec{1 \\x\\x^2\\.\\x^N}= \sum_{j=0}^{M} w_j x^{j}
@@ -226,6 +226,19 @@ where M is the order of the polynomial.
 The polynomial coefficient are collectively denoted by the vector w.
 Although the polynomial function y$\brak{w,x}$ is a nonlinear function of x, it
 is a linear function of the coefficients $\textbf{w}$. Functions, such as the polynomial, which are linear in the unknown parameters have important properties and are called \textbf{linear models}.
+
+The values of the coefficients are determined by fitting the polynomial to the
+training data. This can be done by minimizing an \textbf{error function} that measures the
+misfit between the function $y(x,\vec{w})$, for any given value of $\vec{w}$, and the training set data points. The widely used error function, is given by
+the sum of the squares of the errors between the predictions $y(x_{n},\vec{w})$ for each data point $x_{n}$ and the corresponding target values $t_{n}$
+\begin{align}
+    E(x) = \frac{1}{2}\sum_{n=1}^{N}\cbrak{y(x_{n},\vec{w}) - t_{n}}^2 \label{eq:2}
+\end{align}
+In Regularization, we add a penalty term $\lambda$ to the error function \eqref{eq:2} in order to discourage the coefficients from reaching large values. This penalty term takes the form of a sum of squares of all the coefficients, leading to a modified error function of the form
+\begin{align}
+    \Tilde{E(x)} = \frac{1}{2}\sum_{n=1}^{N}\cbrak{y(x_{n},\vec{w}) - t_{n}}^2 + \frac{\lambda}{2}\norm{\vec{w}}^2
+\end{align}
+where $\norm{\vec{w}}^2$ = $\vec{w}^T\vec{w}$ = $w_{0}^2 + w_{1}^2 + ... +w_{M}^2$ and the coefficient $\lambda$ governs the relative importance of the regularization term compared with the sum-of-the-squares term.
 \section{Training the Model}
 First, we take a random guess of the sine curve on the input data
 \begin{lstlisting}
