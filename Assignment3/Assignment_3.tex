@@ -215,50 +215,77 @@ y = A*np.sin(2*np.pi*x) + noise
 plt.scatter(x,y,c='b',marker='o',label='Data with noise')
 plt.xlabel('x');plt.ylabel('y')
 \end{lstlisting}
-%
-\section{Polynomial Curve Fitting}
-The goal is to find the best line that fits into the  pattern of the training data shown in the graph.
-We shall fit the data using a polynomial function of the form, 
-\begin{align}
-     y\brak{w,x}= \myvec{w_0 & w_1 & w_2 &.&...w_N}\myvec{1 \\x\\x^2\\.\\x^N}= \sum_{j=0}^{M} w_j x^{j}
-\end{align}
-where M is the order of the polynomial.
-The polynomial coefficient are collectively denoted by the vector w.
-Although the polynomial function y$\brak{w,x}$ is a nonlinear function of x, it
-is a linear function of the coefficients $\textbf{w}$. Functions, such as the polynomial, which are linear in the unknown parameters have important properties and are called \textbf{linear models}.
-
-The values of the coefficients are determined by fitting the polynomial to the
-training data. This can be done by minimizing an \textbf{error function} that measures the
-misfit between the function $y(x,\vec{w})$, for any given value of $\vec{w}$, and the training set data points. The widely used error function, is given by
-the sum of the squares of the errors between the predictions $y(x_{n},\vec{w})$ for each data point $x_{n}$ and the corresponding target values $t_{n}$
-\begin{align}
-    E(x) = \frac{1}{2}\sum_{n=1}^{N}\cbrak{y(x_{n},\vec{w}) - t_{n}}^2 \label{eq:2}
-\end{align}
-In Regularization, we add a penalty term $\lambda$ to the error function \eqref{eq:2} in order to discourage the coefficients from reaching large values. This penalty term takes the form of a sum of squares of all the coefficients, leading to a modified error function of the form
-\begin{align}
-    \Tilde{E(x)} = \frac{1}{2}\sum_{n=1}^{N}\cbrak{y(x_{n},\vec{w}) - t_{n}}^2 + \frac{\lambda}{2}\norm{\vec{w}}^2
-\end{align}
-where $\norm{\vec{w}}^2$ = $\vec{w}^T\vec{w}$ = $w_{0}^2 + w_{1}^2 + ... +w_{M}^2$ and the coefficient $\lambda$ governs the relative importance of the regularization term compared with the sum-of-the-squares term.
-\section{Training the Model}
-First, we take a random guess of the sine curve on the input data
-\begin{lstlisting}
-plt.plot(np.linspace(0,1,50),np.sin(2*np.linspace(0,1,50)*np.pi),c='g',linewidth=2,label='function generating input data')
-\end{lstlisting} 
-Here, we use regularization parameter $\lambda$ which is used to control the overfitting phenomenon and initialize the polynomial degree. 
+Intialize a regularization parameter $\lambda$ 
 \begin{lstlisting}
 lamda = 0.00000001522 
 poly_deg = 3
 \end{lstlisting}
-Now we generate the input matrix f which is obtained from the random values of x.
+Now, add bias and higher order terms. Here we initialize column 1 with 1 and generate the input matrix as follows
 \begin{lstlisting}
-f = np.zeros(shape = (N,poly_deg+1))
-f[:,0] = 1
+F = np.zeros(shape = (N,poly_deg+1))
+F[:,0] = 1
 for i in range(1,poly_deg+1):
-    f[:,i] = np.power(x,i).reshape((N,))    
+    F[:,i] = np.power(x,i).reshape((N,))    
 \end{lstlisting}
-Now, we use regularization and fit our model with all the parameters and function to generate the plot.
+The generated matrix would look like
+\begin{align}
+    \vec{F}= \myvec{ 1 & x_{0} & x_{0}^2 & \ldots & x_{0}^{N-1} \\
+		1 & x_{1} & x_{1}^2 & \ldots & x_{1}^{N-1} \\
+		1 & x_{2} & x_{2}^2 & \ldots & x_{2}^{N-1} \\
+		\vdots & & \vdots &  & \vdots  \\
+		    1 & \ldots & \ldots & \ldots & x_{N}^{N-1} }\label{eq:12}
+\end{align}
+\section{Polynomial Curve Fitting}
+The goal is to find the best line that fits into the  pattern of the training data shown in the graph.
+We shall fit the data using a polynomial function of the form, 
+\begin{align}
+     y\brak{w,x}= \sum_{j=0}^{M} w_j x^{j}\\
+     y = \hat{\vec{w}}\vec{F}\\
+     y = \vec{w}\myvec{ 1 & x_{0} & x_{0}^2 & \ldots & x_{0}^{N-1} \\
+		1 & x_{1} & x_{1}^2 & \ldots & x_{1}^{N-1} \\
+		1 & x_{2} & x_{2}^2 & \ldots & x_{2}^{N-1} \\
+		\vdots & & \vdots &  & \vdots  \\
+		    1 & \ldots & \ldots & \ldots & x_{N}^{N-1} }
+\end{align}
+M is the order of the polynomial
+The polynomial coefficient are collectively denoted by the vector $\vec{w}$.The proposed vector $\vec{w}$ of the model referring to Eq \eqref{eq:12} is given by 
+\begin{align}
+    \hat{\vec{w}} = \brak{\vec{F}^T\vec{F}}^{-1}\vec{F}^Ty \label{eq:13}
+\end{align}
+Eq \eqref{eq:13} can be modified by adding a penalty term $\lambda$ to the diagonal entries of the matrix $F^{T}F$ before taking its inverse is given by
+\begin{align}
+     \hat{\vec{w}} = \brak{\vec{F}^T\vec{F} + \lambda I_{M}}^{-1}\vec{F}^Ty \label{eq:14}
+\end{align}
+The values of the coefficients are determined by fitting the polynomial to the
+training data.This can be done by minimizing an \textbf{error function} that measures the
+misfit between the function y and the training set data points given as
+\begin{align}
+    \sum_{i=1}^{N}\brak{y_{i} - \sum_{j=0}^{M}x^{j}w_{j}}^2 \label{eq:15}
+\end{align}
+Eq \eqref{eq:14} is used to modify the error function Eq \eqref{eq:15}
+\begin{align}
+    \sum_{i=1}^{N}\brak{y_{i} - \sum_{j=0}^{M}x^{j}w_{j}}^2 + \lambda\sum_{j=0}^{M}w_{j}^2\label{eq:16}
+\end{align}
+where for some  $t>0$, $\sum_{j=1}^{M}w_{j}^2<0$, 
+Eq \eqref{eq:16} can be further expressed as
+\begin{align}
+    (\vec{y} - \vec{wF})^T(\vec{y} - \vec{wF}) - \lambda\norm{\vec{w}}^2
+\end{align}
+where $\norm{\vec{w}}^2$ = $\vec{w}^T\vec{w}$ = $w_{0}^2 + w_{1}^2 + ... +w_{M}^2$ and the coefficient $\lambda$ governs the relative importance of the regularization term compared with the sum-of-the-squares term.
+
+First, we take a random guess of the sine curve on the input data
 \begin{lstlisting}
-W = np.linalg.pinv((f.T.dot(f) + lamda*np.eye(poly_deg+1))).dot(f.T).dot(y)
+plt.plot(np.linspace(0,1,50),np.sin(2*np.linspace(0,1,50)*np.pi),c='g',linewidth=2,label='function generating input data')
+\end{lstlisting} 
+Form the penalized residual sum of squares as follows
+\begin{lstlisting}
+W = np.linalg.pinv((F.T.dot(F) + lamda*np.eye(poly_deg+1))).dot(F.T).dot(y)
+\end{lstlisting}
+Plot the predicted output
+\begin{lstlisting}
+plt.plot(x,F.dot(W),'r',label='After fitting')
+plt.legend()
+plt.show()
 \end{lstlisting}
 You need to vary $\lambda$ to make it work.
 \begin{figure}[!h]
