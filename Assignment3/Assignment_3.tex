@@ -252,26 +252,44 @@ The polynomial coefficient are collectively denoted by the vector $\vec{w}$.The 
 \begin{align}
     \hat{\vec{w}} = \brak{\vec{F}^T\vec{F}}^{-1}\vec{F}^Ty \label{eq:13}
 \end{align}
-Eq \eqref{eq:13} can be modified by adding a penalty term $\lambda$ to the diagonal entries of the matrix $F^{T}F$ before taking its inverse given by
-\begin{align}
-     \hat{\vec{w}} = \brak{\vec{F}^T\vec{F} + \lambda I_{M}}^{-1}\vec{F}^Ty \label{eq:14}
-\end{align}
+%Eq \eqref{eq:13} can be modified by adding a penalty term $\lambda$ to the diagonal %entries of the matrix $F^{T}F$ before taking its inverse given by
+%\begin{align}
+%     \hat{\vec{w}} = \brak{\vec{F}^T\vec{F} + \lambda I_{M}}^{-1}\vec{F}^Ty %\label{eq:14}
+%\end{align}
 The values of the coefficients are determined by fitting the polynomial to the
 training data.This can be done by minimizing an \textbf{error function} that measures the
 misfit between the function y and the training set data points given as
 \begin{align}
     \sum_{i=1}^{N}\brak{y_{i} - \sum_{j=0}^{M}x^{j}w_{j}}^2 \label{eq:15}
 \end{align}
-Eq \eqref{eq:14} is used to modify the error function Eq \eqref{eq:15}
+We add a penalty term at the end to modify the error function Eq \eqref{eq:15}
 \begin{align}
     \sum_{i=1}^{N}\brak{y_{i} - \sum_{j=0}^{M}x^{j}w_{j}}^2 + \lambda\sum_{j=0}^{M}w_{j}^2\label{eq:16}
 \end{align}
 where for some  $t>0$, $\sum_{j=1}^{M}w_{j}^2<t$, 
 Eq \eqref{eq:16} can be further expressed as
 \begin{align}
-    (\vec{y} - \vec{wF})^T(\vec{y} - \vec{wF}) - \lambda\norm{\vec{w}}^2
+    \brak{\vec{y} - \vec{wF}}^T\brak{\vec{y} - \vec{wF}} - \lambda\norm{\vec{w}}^2\label{eq:17}
 \end{align}
-where $\norm{\vec{w}}^2$ = $\vec{w}^T\vec{w}$ = $w_{0}^2 + w_{1}^2 + ... +w_{M}^2$ and the coefficient $\lambda$ governs the relative importance of the regularization term compared with the sum-of-the-squares term.
+where $\norm{\vec{w}}^2$ = $\vec{w}^T\vec{w}$.Expand Eq \eqref{eq:17}.
+Let 
+\begin{align}
+    E = \brak{\vec{y} - \vec{wF}}^T\brak{\vec{y} - \vec{wF}} - \lambda\vec{w}^T\vec{w}\\
+      = \vec{y}^T\vec{y} - \vec{y}^T\vec{wF} - \vec{w}^T\vec{F}^T\vec{y} + \vec{w}^T\vec{F}^T\vec{F}\vec{w} + \lambda\vec{w}^T\vec{w}\\
+      = \vec{y}^T\vec{y} -\vec{w}^T\vec{F}^T\vec{y}  - \vec{w}^T\vec{F}^T\vec{y} + \vec{w}^T\vec{F}^T\vec{F}\vec{w} + \vec{w}^T\lambda\vec{I}\vec{w}\\
+      = \vec{y}^T\vec{y} -2\vec{w}^T\vec{F}^T\vec{y}+\vec{w}^T\brak{\vec{F}^T\vec{F} + \lambda\vec{I}}\vec{w}\label{eq:18}
+\end{align}
+Evaluate $\vec{w}$ that minimizes E. Here, we make use of matrix differentiation rule given as
+\begin{align}
+    \frac{\partial xA^Tx}{\partial x} = (A + A^T)x = 2Ax
+\end{align}
+We get 2Ax when A is symmetric. This can be applied here as $\brak{\vec{F}^T\vec{F} + \lambda\vec{I}}$. From Eq \eqref{eq:18}
+\begin{align}
+    \frac{\partial E}{\partial \vec{w}} = -2\vec{F}^T\vec{y} + 2\brak{\vec{F}^T\vec{F} + \lambda\vec{I}}\vec{w} = 0\\
+    \implies \brak{\vec{F}^T\vec{F} + \lambda\vec{I}}\vec{w} = \vec{F}^T\vec{y}\\
+    \implies \vec{w} = \brak{\vec{F}^T\vec{F} + \lambda\vec{I}}^{-1}\vec{F}^T\vec{y}
+\end{align}
+The coefficient $\lambda$ governs the relative importance of the regularization term compared with the sum-of-the-squares term.
 
 First, we take a random guess of the sine curve on the input data
 \begin{lstlisting}
