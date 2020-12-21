@@ -298,8 +298,8 @@ Here, we have considered single input value x. Now substituting this expanded eq
 $expected loss = (bias)^2 + variance + noise$
 
 \begin{align}
-    (bias)^2 = \int \brak{E[y(x;D)]- h(x)}^2\\
-    variance = \int E_{D}[(y(x;D) - E_{D}[y(x;D)])^2]\\
+    (bias)^2 = \int \brak{E[y(x;D)]- h(x)}^2 p(x) dx\\
+    variance = \int E_{D}[(y(x;D) - E_{D}[y(x;D)])^2] p(x) dx\\
     noise = \int(h(x) - t)^2p(x,t)dx dt
 \end{align}
 The ultimate goal is to minimize the expected loss which we have decomposed into $(bias)^2$, $variance$ and constant noise term.
