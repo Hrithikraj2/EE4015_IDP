@@ -244,77 +244,75 @@ The polynomial coefficient are collectively denoted by the vector $\vec{w}$.The 
 \end{align}
 
 \section{Bias- Variance Tradeoff}
-Further, in this section we need to find suitable value for regularization parameter $\lambda$.
-Once we are given the conditional distribution $p(t | x)$. A popular loss function in regression problems is squared loss function. Note that 
+In decision theory, the decision stage consists of choosing a specific estimate $y(\vec{x})$ for the target t for each input $\vec{x}$
 
-Squared loss function(decision theory) != sum of squares error function (ML)
-
+This can be done by using a loss function $L(t,y(\vec{x}))$ so the expected loss is
+\begin{align}
+    E[L] = \int \int L(t,y(\vec{x}))p(\vec{x},t)d\vec{x}dt
+\end{align}
+A common loss function is the squared loss function given by
+\begin{align}
+    L(t,y(\vec{x})) = (y(\vec{x}) - t)^2 \label{eq : squared_loss_func}
+\end{align}
+The expected loss for Eq \eqref{eq : squared_loss_func},
+\begin{align}
+    E[L] = \int \int (y(\vec{x}) - t)^2p(\vec{x},t)d\vec{x}dt
+\end{align}
 The optimal prediction for the squared loss function is given by the conditional expectation h(x)
 \begin{align}
-    h(x) = E[t | x] = \int t p(t | x)dt
+    h(x) = E[t |\vec{x}] = \int t p(t |\vec{x})dt
 \end{align}
-To determine the conditional distribution, we need to use more sophisticated techniques such as regularization. The expected square loss takes the form
+where $p(t | x)$ is the conditional distribution
+
+The expected square loss takes the form
 \begin{multline}
-    E[L] = \int(y(x)-h(x))^2p(x)dx +\\ 
-    \int(h(x) - t)^2p(x,t)dx dt \label{eq : expected_loss}
+    E[L] = \int(y(\vec{x})-h(\vec{x}))^2p(\vec{x})d\vec{x} +\\ 
+    \int \int(h(\vec{x}) - t)^2p(\vec{x},t)d\vec{x} dt \label{eq : expected_loss}
 \end{multline}
-The second term in Eq \eqref{eq : expected_loss} is due to the noise in the data and represents the minimum achievable value of the expected loss. In the first term, we seek a solution for y(x) so that this term becomes minimum.
-
-With unlimited data and computational resources we could find the regression function h(x) to any accuracy, but practically we only have dataset D and finite number of points, So h(x) is not known exactly.
-When we model h(x) using a parametric function y(w,x) with paramter vector $\vec{w}$, From Bayesian point of view, the uncertainity in the model is expressed through a posterior distribution over $\vec{w}$.
-
-A frequentist treatment makes a point estimate of $\vec{w}$ based on the data, the uncertainity of this estimate is expressed through the large dataset consisting finite number of points and each drawn independently from distribution $p(t | x)$.
-
-For any data set D, we learn the algorithm and get a prediction function y(x:D). So, different datasets give different functions which in turn give different squared losses. Averaging over sets gives us the performance of the algorithm.
+In Eq \eqref{eq : expected_loss},
+Second term is due to the noise in the data.
 
 Consider the integrand of the first term in Eq \eqref{eq : expected_loss}, which becomes
 \begin{align}
-    (y(x;D) - h(x))^2 \label{eq : first_term}
+    (y(\vec{x};D) - h(\vec{x}))^2 \label{eq : first_term}
 \end{align}
-for a particular data set which has to averaged over the ensemble of sets.
-Adding and subtracting $E[y(x;D)]$ to Eq \eqref{eq : first_term}
+for D data sets.
+
+Adding and subtracting $E[y(\vec{x};D)]$ to Eq \eqref{eq : first_term}
 \begin{align}
-    (y(x;D) - E[y(x;D)] + E[y(x;D)]- h(x))^2
+    (y(\vec{x};D) - E[y(\vec{x};D)] + E[y(\vec{x};D)]- h(\vec{x}))^2
 \end{align}
 Expanding,
 \begin{multline}
-    \brak{y(x;D) - E[y(x;D)] + E[y(x;D)]- h(x)}^2 = \\
-      \brak{y(x;D) - E[y(x;D)]}^2 + \brak{E[y(x;D)]- h(x)}^2 + \\
-      2\brak{y(x;D) - E[y(x;D)]}\brak{E[y(x;D)]- h(x)}^2)
+    \brak{y(\vec{x};D) - E[y(\vec{x};D)] + E[y(\vec{x};D)]- h(\vec{x})}^2 = \\
+      \brak{y(\vec{x};D) - E[y(\vec{x};D)]}^2 + \brak{E[y(\vec{x};D)]- h(\vec{x})}^2 + \\
+      2\brak{y(\vec{x};D) - E[y(\vec{x};D)]}\brak{E[y(\vec{x};D)]- h(\vec{x})}^2)
 \end{multline}
 Take the expectation w.r.t D,
 \begin{multline}
-    E[(y(x;D) - h(x))^2] = \brak{E[y(x;D)]- h(x)}^2\\
-       + E_{D}[(y(x;D) - E_{D}[y(x;D)])^2] \label{eq : modified_expected}
+    E[(y(\vec{x};D) - h(\vec{x}))^2] = \brak{E[y(\vec{x};D)]- h(\vec{x})}^2\\
+       + E_{D}[(y(\vec{x};D) - E_{D}[y(\vec{x};D)])^2] \label{eq : modified_expected}
 \end{multline}
 In Eq \eqref{eq : modified_expected}, 
 
-the first term refers to $(bias)^2$ - which represents the extent to which the average prediction over all datasets differ from desired regression and
+First term -  $(bias)^2$ 
 
-second term refers to $variance$ - which measures the extent to which the solutions for individual data sets vary around their average and hence measuring the extent to which $y(x;D)$
-is sensitive to a particular data set
+Second term - $variance$ 
 
-Here, we have considered single input value x. Now substituting this expanded eq in Eq \eqref{eq : expected_loss},
+Now substituting this expanded eq in Eq \eqref{eq : expected_loss},
 $expected loss = (bias)^2 + variance + noise$
 
 \begin{align}
-    (bias)^2 = \int \brak{E[y(x;D)]- h(x)}^2 p(x) dx\\
-    variance = \int E_{D}[(y(x;D) - E_{D}[y(x;D)])^2] p(x) dx\\
-    noise = \int(h(x) - t)^2p(x,t)dx dt
+    (bias)^2 = \int \brak{E[y(\vec{x};D)]- h(\vec{x})}^2 p(\vec{x}) d\vec{x}\\
+    variance = \int E_{D}[(y(\vec{x};D) - E_{D}[y(\vec{x};D)])^2] p(\vec{x}) d\vec{x}\\
+    noise = \int(h(\vec{x}) - t)^2p(\vec{x},t)d\vec{x} dt
 \end{align}
 The ultimate goal is to minimize the expected loss which we have decomposed into $(bias)^2$, $variance$ and constant noise term.
 
-There is a trade off between bias and variance
+\section{Example}
+We generate 100 datasets, each containing 50 data points independently from the sinusoidal curve $h(x) = sin(2\pi x)$ . 
 
-A flexible model has low bias and high variance
-
-A rigid model has high bias and low variance
-
-The model with optimal predictive capability is the one with best balance.
-
-Consider this example where we generate 100 datasets, each containing 50 data points independently from the sinusoidal curve $h(x) = sin(x)$ . For each dataset, we fit the model by minimizing the regularized error function to give a prediction function.
-
-It is observed that,
+For each dataset, we fit the model by using regularization.
 
 large $\lambda$, low variance but high bias and
 
@@ -322,7 +320,7 @@ small $\lambda$, low bias but high variance.
 
 We have to choose to $\lambda$ value such that the value of $(bias)^2 + variance$ is minimum.
 
-Here are few plots of different polynomial degrees with different $\lambda$ values.
+Plots for different values of $\lambda$.
 
 \begin{figure}[!h]
 \begin{center}
@@ -356,17 +354,17 @@ Here are few plots of different polynomial degrees with different $\lambda$ valu
 \label{fig:5}
 \end{figure}
 
-In this example, we can also examine the bias - variance trade off quantitatively.
-
 The average prediction is estimated from
 \begin{align}
-    \bar y(x) = \frac{1}{L} \sum_{l=1}^{L} y^{(l)}(x)
+    \bar y(\vec{x}) = \frac{1}{L} \sum_{l=1}^{L} y^{(l)}(\vec{x})
 \end{align}
 and the integrated $(bias)^2$ and variance is given by
 \begin{align}
-    (bias)^2 = \frac{1}{N} \sum_{n=1}^{N} \brak{\bar y(x_{n}) - h(x_{n})}^2\\
-    variance = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{L} \sum_{l=1}^{L} \brak{y^{(l)}(x_{n}) - \bar y(x_{n})}
+    (bias)^2 = \frac{1}{N} \sum_{n=1}^{N} \brak{\bar y(\vec{x}_{n}) - h(\vec{x}_{n})}^2\\
+    variance = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{L} \sum_{l=1}^{L} \brak{y^{(l)}(\vec{x}_{n}) - \bar y(\vec{x}_{n})}
 \end{align}
+The model with optimal predictive capability is the one with best balance.
+
 Python code:
 \begin{lstlisting}
 https://github.com/Hrithikraj2/EE4015_IDP/blob/main/Assignment_5/Assignment_5.ipynb
