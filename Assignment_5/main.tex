@@ -262,7 +262,7 @@ The optimal prediction for the squared loss function is given by the conditional
 \begin{align}
     h(x) = E[t |\vec{x}] = \int t p(t |\vec{x})dt
 \end{align}
-where $p(t | x)$ is the conditional distribution
+where $p(t | \vec{x})$ is the conditional distribution
 
 The expected square loss takes the form
 \begin{multline}
@@ -360,8 +360,8 @@ The average prediction is estimated from
 \end{align}
 and the integrated $(bias)^2$ and variance is given by
 \begin{align}
-    (bias)^2 = \frac{1}{N} \sum_{n=1}^{N} \brak{\bar y(\vec{x}_{n}) - h(\vec{x}_{n})}^2\\
-    variance = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{L} \sum_{l=1}^{L} \brak{y^{(l)}(\vec{x}_{n}) - \bar y(\vec{x}_{n})}
+    (bias)^2 = \frac{1}{N} \sum_{n=1}^{N} \brak{\bar y(x_{n}) - h(x_{n})}^2\\
+    variance = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{L} \sum_{l=1}^{L} \brak{y^{(l)}(x_{n}) - \bar y(x_{n})}
 \end{align}
 The model with optimal predictive capability is the one with best balance.
 
