@@ -237,8 +237,8 @@ We now compute the posterior distribution, which is proportional to the product 
 Since the prior is Gaussian, so would be the posterior.
 In Eq \eqref{eq : posterior},
 \begin{align}
-       \vec{m}_{N} = \vec{S}_{N}\brak{\vec{S}_{0}^{-1}\vec{m}_{0} + \beta f^T t}\\
-       \vec{S}_{N}^{-1} = \vec{S}_{0}^{-1} + \beta f^{T} f
+       \vec{m}_{N} = \vec{S}_{N}\brak{\vec{S}_{0}^{-1}\vec{m}_{0} + \beta \vec{f}^T \vec{t}}\\
+       \vec{S}_{N}^{-1} = \vec{S}_{0}^{-1} + \beta \vec{f}^{T} \vec{f}
 \end{align}
 Specifically, we consider a zero - mean isotropic Gaussian governed by a single precision parameter $\alpha$ so that
 \begin{align}
@@ -246,13 +246,13 @@ Specifically, we consider a zero - mean isotropic Gaussian governed by a single 
 \end{align}
 Then the corresponding posterior distribution over $\vec{w}$ is then given as
 \begin{align}
-    \vec{m}_{N} = \beta\vec{S}_{N} f^T t \label{eq : mean}\\
-    \vec{S}_{N}^{-1} = \alpha \vec{I} + \beta f^{T} f
+    \vec{m}_{N} = \beta\vec{S}_{N} \vec{f}^T \vec{t} \label{eq : mean}\\
+    \vec{S}_{N}^{-1} = \alpha \vec{I} + \beta \vec{f}^{T} \vec{f}
 \end{align}
 The predictive mean can be written in the form
 \begin{multline}
      y(\vec{x},\vec{m}_{N}) = \vec{m}_{N} f(x)\\
-        = \beta f(\vec{x})^{T} S_{N} f^{T} t \\
+        = \beta f(\vec{x})^{T} S_{N} \vec{f}^{T} \vec{t} \\
         = \sum_{n=1}^{N} \beta f(\vec{x})^{T} S_{N} f(\vec{x}_{n}) t_{n}
 \end{multline}
 The mean of the predictive distribution at a point $\vec{x}$ is given by a linear combination of the training set target variables $t_{n}$ , so
