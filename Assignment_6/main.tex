@@ -242,18 +242,18 @@ In Eq \eqref{eq : posterior},
 \end{align}
 Specifically, we consider a zero - mean isotropic Gaussian governed by a single precision parameter $\alpha$ so that
 \begin{align}
-    p(\vec{w} | \alpha) = N(\vec{w} | 0, \alpha^{-1} I)
+    p(\vec{w} | \alpha) = N(\vec{w} | 0, \alpha^{-1} \vec{I})
 \end{align}
 Then the corresponding posterior distribution over $\vec{w}$ is then given as
 \begin{align}
     \vec{m}_{N} = \beta\vec{S}_{N} f^T t \label{eq : mean}\\
-    \vec{S}_{N}^{-1} = \alpha I + \beta f^{T} f
+    \vec{S}_{N}^{-1} = \alpha \vec{I} + \beta f^{T} f
 \end{align}
 The predictive mean can be written in the form
 \begin{multline}
      y(\vec{x},\vec{m}_{N}) = \vec{m}_{N} f(x)\\
-        = \beta f(x)^{T} S_{N} f^{T} t \\
-        = \sum_{n=1}^{N} \beta f(x)^{T} S_{N} f(\vec{x}_{n}) t_{n}
+        = \beta f(\vec{x})^{T} S_{N} f^{T} t \\
+        = \sum_{n=1}^{N} \beta f(\vec{x})^{T} S_{N} f(\vec{x}_{n}) t_{n}
 \end{multline}
 The mean of the predictive distribution at a point $\vec{x}$ is given by a linear combination of the training set target variables $t_{n}$ , so
 \begin{align}
@@ -283,11 +283,11 @@ for all values of x.
 
 Eq \eqref{eq : kernel} satisfies the general equation of kernel, that can be expressed in the form an inner product with respect to a vector $f(\vec{x})$ of non linear functions given by
 \begin{align}
-      k(\vec{x},\vec{z}) = f(\vec{x})^{T}f(\vec{z})
+      k(\vec{x},\vec{z}) = \psi(\vec{x})^{T}\psi(\vec{z})
 \end{align}
 where
 \begin{align}
-    f(\vec{x}) = \beta^{\frac{1}{2}}S_{N}^{\frac{1}{2}} f(\vec{x})
+    \psi(\vec{x}) = \beta^{\frac{1}{2}}S_{N}^{\frac{1}{2}} f(\vec{x})
 \end{align}
 \section{Implementation using numPy}
 Here, we will use the squared exponential kernel, also known as Gaussian kernel.
